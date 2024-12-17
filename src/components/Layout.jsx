@@ -66,9 +66,11 @@ export default function Layout() {
         )}
       </Disclosure>
 
-      <main>
-        <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
-          <Outlet />
+      <main className="flex justify-center w-full">
+        <div className="w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+          <div className="w-full">
+            <Outlet />
+          </div>
         </div>
       </main>
     </div>

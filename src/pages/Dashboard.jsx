@@ -93,8 +93,8 @@ export default function Dashboard() {
   }
 
   const handleView = (parte) => {
-    // Implementar la vista detallada
-    window.location.href = `/parte/${parte.id}`
+    // Redirigir a la página de edición para ver los detalles
+    window.location.href = `/editar-parte/${parte.id}`
   }
 
   const handleEdit = (parte) => {
@@ -321,105 +321,65 @@ export default function Dashboard() {
         </div>
 
         {/* Vista Mobile */}
-        <div className="sm:hidden bg-gray-50 min-h-screen">
-          {/* Header */}
-          <div className="bg-white px-4 py-3">
-            <h1 className="text-xl font-semibold text-blue-600">Partes de Obra</h1>
-          </div>
+        <div className="sm:hidden">
+          <div className="flex flex-col space-y-4">
+            <div className="flex justify-between items-center px-4">
+              <h1 className="text-xl font-bold text-blue-600">Partes de Obra</h1>
+              <Link
+                to="/nuevo-parte"
+                className="inline-flex items-center justify-center p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 shadow-lg"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 01-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+                </svg>
+              </Link>
+            </div>
 
-          {/* Contenedor principal */}
-          <div className="px-4 py-3">
-            {loading ? (
-              <div className="flex justify-center items-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {partes.map((parte) => (
-                  <div
-                    key={parte.id}
-                    onClick={() => handleEdit(parte)}
-                    className="bg-white rounded-xl shadow-sm p-4 cursor-pointer hover:shadow-md transition-shadow duration-200"
-                  >
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="text-base font-medium text-gray-900">
-                            Nº {parte.numero_parte || `P-${parte.id.toString().padStart(4, '0')}`}
-                          </h3>
-                          <span className="px-2 py-0.5 bg-yellow-100 text-yellow-800 text-xs rounded-full">
-                            en edicion
-                          </span>
-                        </div>
-                        <p className="text-sm text-gray-600 mb-2">
-                          {parte.nombre_trabajador}
-                        </p>
+            <div className="px-4 space-y-4">
+              {partes.map((parte) => (
+                <div
+                  key={parte.id}
+                  className="bg-white rounded-xl shadow-md overflow-hidden"
+                >
+                  <div className="p-5">
+                    <div className="flex flex-col space-y-2">
+                      <div className="flex justify-between items-start">
+                        <h3 className="text-lg font-semibold text-gray-900">
+                          {parte.numero_parte || `Parte ${parte.id}`}
+                        </h3>
+                        <span className="text-sm text-gray-500">
+                          {new Date(parte.fecha).toLocaleDateString()}
+                        </span>
                       </div>
-                    </div>
-
-                    <div className="border-t border-gray-100 pt-3">
-                      <div className="grid grid-cols-2 gap-4 mb-3">
-                        <div>
-                          <p className="text-sm text-gray-500">Fecha</p>
-                          <p className="text-sm">{new Date(parte.fecha).toLocaleDateString()}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-500">Total</p>
-                          <p className="text-sm">{parte.total || '0,00'} €</p>
-                        </div>
+                      <div className="space-y-1">
+                        <p className="text-gray-700 font-medium">{parte.cliente}</p>
+                        <p className="text-gray-600">{parte.nombre_obra}</p>
+                        <p className="text-gray-600">{parte.nombre_trabajador}</p>
                       </div>
-
-                      <div className="flex justify-end gap-4">
+                      <div className="pt-4 flex flex-wrap gap-2 justify-end border-t border-gray-100 mt-4">
                         <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleView(parte);
-                          }}
-                          className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-md text-sm font-medium hover:bg-blue-100"
+                          onClick={() => handleView(parte)}
+                          className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium shadow-sm hover:bg-blue-700"
                         >
                           Ver
                         </button>
                         <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleEdit(parte);
-                          }}
-                          className="px-3 py-1.5 bg-green-50 text-green-600 rounded-md text-sm font-medium hover:bg-green-100"
+                          onClick={() => handleEdit(parte)}
+                          className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium shadow-sm hover:bg-gray-200"
                         >
                           Editar
                         </button>
                         <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDelete(parte.id);
-                          }}
-                          className="px-3 py-1.5 bg-red-50 text-red-600 rounded-md text-sm font-medium hover:bg-red-100"
+                          onClick={() => handleDelete(parte.id)}
+                          className="flex-1 px-4 py-2 bg-red-100 text-red-600 rounded-lg text-sm font-medium shadow-sm hover:bg-red-200"
                         >
                           Eliminar
                         </button>
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Botones fijos inferiores */}
-          <div className="fixed bottom-0 left-0 right-0 p-4 bg-white">
-            <div className="flex gap-3">
-              <Link
-                to="/nuevo-parte"
-                className="flex-1 bg-blue-500 text-white rounded-lg py-3 text-center font-medium"
-              >
-                Nuevo Parte
-              </Link>
-              <button
-                onClick={handleExportAllToExcel}
-                className="flex-1 bg-emerald-500 text-white rounded-lg py-3 text-center font-medium"
-              >
-                Exportar Excel
-              </button>
+                </div>
+              ))}
             </div>
           </div>
         </div>
