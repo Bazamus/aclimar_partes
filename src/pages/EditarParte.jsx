@@ -9,6 +9,7 @@ export default function EditarParte() {
   const { id } = useParams()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
+  const [obras, setObras] = useState([])
   const [formData, setFormData] = useState({
     nombre_obra: '',
     codigo_empleado: '',
@@ -61,6 +62,25 @@ export default function EditarParte() {
 
     fetchParte()
   }, [id])
+
+  useEffect(() => {
+    const fetchObras = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('obras')
+          .select('*')
+          .order('nombre_obra', { ascending: true })
+
+        if (error) throw error
+        setObras(data)
+      } catch (error) {
+        toast.error('Error al cargar las obras')
+        console.error('Error:', error)
+      }
+    }
+
+    fetchObras()
+  }, [])
 
   const handleChange = async (e) => {
     const { name, value } = e.target
@@ -210,19 +230,24 @@ export default function EditarParte() {
                 <h3 className="text-lg font-semibold text-gray-900">Información Principal</h3>
               </div>
               <div className="space-y-4">
-                <div>
-                  <label htmlFor="nombre_obra" className="block text-sm font-medium text-gray-900 mb-1">
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
                     Nombre de la Obra
                   </label>
-                  <input
-                    type="text"
+                  <select
                     name="nombre_obra"
-                    id="nombre_obra"
-                    required
                     value={formData.nombre_obra}
                     onChange={handleChange}
-                    className="w-full px-4 py-2.5 bg-white text-gray-900 rounded-xl border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-colors duration-200"
-                  />
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    required
+                  >
+                    <option value="">Seleccione una obra</option>
+                    {obras.map((obra) => (
+                      <option key={obra.id} value={obra.nombre_obra}>
+                        {obra.nombre_obra}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div>
                   <label htmlFor="codigo_empleado" className="block text-sm font-medium text-gray-900 mb-1">
